@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Direction coordinators">
+        <EditTextPreference
+            android:title="Latitude"
+            android:summary="Tap to edit direction latitude"
+            android:key="destinationLatitude"/>
+
+        <EditTextPreference
+            android:title="Longitude"
+            android:summary="Tap to edit direction longitude"
+            android:key="destinationLongitude"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

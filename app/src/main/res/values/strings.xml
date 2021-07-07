@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">mcCompass</string>
+    <string name="fragment_permission_text">Permission needed …</string>
+    <string name="fragment_settings_title">Permission needed …</string>
+    <string name="img_compass_background_cd">Compass</string>
+    <string name="img_compass_main_hands_cd">Compass hands</string>
+    <string name="img_compass_main_direction_cd">Compass direction</string>
+
+    <!-- Fragment Compass -->
+    <string name="fragment_compass_text_current_lat">Current latitude: %s°</string>
+    <string name="fragment_compass_text_current_long">Current longitude: %s°</string>
+    <string name="fragment_compass_text_destination_lat">Destination latitude: %s°</string>
+    <string name="fragment_compass_text_destination_long">Destination longitude: %s°</string>
+</resources>
