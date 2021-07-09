@@ -1,6 +1,5 @@
 package com.mclowicz.compass.features.compass
 
-import android.graphics.Typeface
 import android.location.Location
 import android.os.Bundle
 import android.view.Menu
@@ -12,17 +11,16 @@ import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import com.mclowicz.compass.R
 import com.mclowicz.compass.data.model.CompassOrientation
 import com.mclowicz.compass.data.model.GeoLocation
-import com.mclowicz.compass.data.sharedPreferences.SharedPreferencesService
 import com.mclowicz.compass.databinding.FragmentCompassBinding
+import com.mclowicz.compass.services.sharedPreferences.SharedPreferencesServiceJava
+import com.mclowicz.compass.utils.Resource
 import com.mclowicz.compass.utils.format
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import java.text.DecimalFormat
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -33,7 +31,7 @@ class CompassFragment : Fragment(R.layout.fragment_compass) {
     private val viewModel by viewModels<CompassViewModel>()
 
     @Inject
-    lateinit var sharedPreferencesService: SharedPreferencesService
+    lateinit var sharedPreferencesService: SharedPreferencesServiceJava
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,15 +63,26 @@ class CompassFragment : Fragment(R.layout.fragment_compass) {
     private fun initObservers() {
         with(viewModel) {
             currentLocation.observe(viewLifecycleOwner, {
-                initLayoutContent(currentLocation)
-                val currentLocation = GeoLocation(
-                    it.latitude,
-                    it.longitude
-                )
-                sharedPreferencesService.saveCurrentLocation(currentLocation)
+                when (it) {
+                    is Resource.Loading -> {
+                        binding.apply {
+                            locationProgressBar.isVisible = true
+                        }
+                    }
+                    is Resource.Success -> {
+                        val data = it.data as Location
+                        val currentLocation = GeoLocation(
+                            data.latitude,
+                            data.longitude
+                        )
+                        initLayoutContent(data)
+                        sharedPreferencesService.saveCurrentLocation(currentLocation)
+                    }
+                }
             })
-            currentOrientation.observe(viewLifecycleOwner, { currentOrientation ->
-                updateCompass(currentOrientation)
+            currentOrientation.observe(viewLifecycleOwner, {
+                if (it is Resource.Success)
+                    updateCompass(it.data as CompassOrientation)
             })
         }
     }
@@ -101,19 +110,19 @@ class CompassFragment : Fragment(R.layout.fragment_compass) {
         this.startAnimation(animation)
     }
 
-    private fun initLayoutContent(currentLocation: LiveData<Location>) {
+    private fun initLayoutContent(currentLocation: Location) {
         val destinationLocation = sharedPreferencesService.getDestinationLocation()
         binding.apply {
-            currentLocation.value?.let {
+            currentLocation.let {
                 locationProgressBar.isVisible = false
             }
             textCurrentLat.text = getString(
                 R.string.fragment_compass_text_current_lat,
-                currentLocation.value?.latitude?.format(6)
+                currentLocation.latitude.format(6)
             )
             textCurrentLong.text = getString(
                 R.string.fragment_compass_text_current_long,
-                currentLocation.value?.longitude?.format(6)
+                currentLocation.longitude.format(6)
             )
             textDestinationLat.text = getString(
                 R.string.fragment_compass_text_destination_lat,

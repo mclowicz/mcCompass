@@ -65,11 +65,20 @@ dependencies {
     // Material Design
     implementation "com.google.android.material:material:$materialDesign"
 
+    // Location
     implementation "com.google.android.gms:play-services-location:$playServicesVersion"
 
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$liveDataVersion"
 
-    implementation "androidx.preference:preference-ktx:1.1.1"
+    // Preference
+    implementation "androidx.preference:preference-ktx:$preferenceVersion"
+
+    // Mockito
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockitoCoreVersion"
+    testImplementation "androidx.arch.core:core-testing:$mockitoCoreVersion"
+    testImplementation "org.mockito:mockito-inline:$mockitoVersion"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineTestVersion"
 }
 
 kapt {

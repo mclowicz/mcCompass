@@ -1,4 +1,4 @@
-package com.mclowicz.compass.data.orientation
+package com.mclowicz.compass.services.orientation
 
 import android.hardware.Sensor
 import android.hardware.Sensor.TYPE_ACCELEROMETER
@@ -8,7 +8,8 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import com.mclowicz.compass.data.model.CompassOrientation
 import com.mclowicz.compass.data.model.GeoLocation
-import com.mclowicz.compass.data.sharedPreferences.SharedPreferencesService
+import com.mclowicz.compass.services.sharedPreferences.SharedPreferencesServiceJava
+import com.mclowicz.compass.utils.Resource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +22,7 @@ import kotlin.math.sin
 
 class OrientationService @Inject constructor(
     private val sensorManager: SensorManager,
-    private val sharedPreferencesService: SharedPreferencesService
+    private val sharedPreferencesService: SharedPreferencesServiceJava
 ) {
     private val R = FloatArray(9)
     private val I = FloatArray(9)
@@ -34,7 +35,7 @@ class OrientationService @Inject constructor(
     private var lastMagnetometerSet = false
 
     @ExperimentalCoroutinesApi
-    fun fetchOrientation(): Flow<CompassOrientation> = callbackFlow {
+    fun fetchOrientation(): Flow<Resource<CompassOrientation>> = callbackFlow {
         val currentPosition: GeoLocation = sharedPreferencesService.getCurrentLocation()
         val destinationPosition: GeoLocation = sharedPreferencesService.getDestinationLocation()
         val accelerometer = sensorManager.getDefaultSensor(TYPE_ACCELEROMETER)
@@ -49,7 +50,6 @@ class OrientationService @Inject constructor(
                     lowPass(event.values, lastMagnetometer)
                     lastMagnetometerSet = true
                 }
-
                 if (lastAccelerometerSet && lastMagnetometerSet) {
                     if (SensorManager.getRotationMatrix(
                             R,
@@ -75,7 +75,7 @@ class OrientationService @Inject constructor(
                         compassOrientation.destinationDirection = destinationAzimuth.toFloat()
                         compassOrientation.lastDestinationDirection = lastDestinationAzimuth
                         lastDestinationAzimuth = destinationAzimuth.toFloat()
-                        offer(compassOrientation)
+                        offer(Resource.Success(compassOrientation))
                     }
                 }
             }

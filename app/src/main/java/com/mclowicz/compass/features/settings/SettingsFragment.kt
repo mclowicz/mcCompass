@@ -5,7 +5,7 @@ import android.text.InputType
 import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceFragmentCompat
 import com.mclowicz.compass.R
-import com.mclowicz.compass.data.sharedPreferences.SharedPreferencesService
+import com.mclowicz.compass.services.sharedPreferences.SharedPreferencesServiceJava
 import com.mclowicz.compass.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -14,7 +14,7 @@ import javax.inject.Inject
 class SettingsFragment : PreferenceFragmentCompat() {
 
     @Inject
-    lateinit var sharedPreferencesService: SharedPreferencesService
+    lateinit var sharedPreferencesService: SharedPreferencesServiceJava
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preference_layout, rootKey)

@@ -1,4 +1,4 @@
-package com.mclowicz.compass.data.location
+package com.mclowicz.compass.services.location
 
 import android.annotation.SuppressLint
 import android.location.Location
@@ -7,6 +7,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
+import com.mclowicz.compass.utils.Resource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +21,8 @@ class LocationService @Inject constructor(
 
     @SuppressLint("MissingPermission")
     @ExperimentalCoroutinesApi
-    fun fetchUpdates(): Flow<Location> = callbackFlow {
+    fun fetchUpdates(): Flow<Resource<Location>> = callbackFlow {
+        offer(Resource.Loading())
         val locationRequest = LocationRequest().apply {
             interval = TimeUnit.SECONDS.toMillis(UPDATE_INTERVAL_SECS)
             fastestInterval = TimeUnit.SECONDS.toMillis(FASTEST_UPDATE_INTERVAL_SECS)
@@ -30,7 +32,7 @@ class LocationService @Inject constructor(
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
                 val location = locationResult.lastLocation
-                offer(location)
+                offer(Resource.Success(location))
             }
         }
         client.requestLocationUpdates(locationRequest, callBack, Looper.getMainLooper())

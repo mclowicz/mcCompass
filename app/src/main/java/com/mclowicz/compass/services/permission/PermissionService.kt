@@ -1,4 +1,4 @@
-package com.mclowicz.compass.data.permission
+package com.mclowicz.compass.services.permission
 
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION

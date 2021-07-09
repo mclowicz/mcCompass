@@ -5,10 +5,10 @@ import android.content.Context
 import android.hardware.SensorManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.mclowicz.compass.data.location.LocationService
-import com.mclowicz.compass.data.orientation.OrientationService
-import com.mclowicz.compass.data.permission.PermissionService
-import com.mclowicz.compass.data.sharedPreferences.SharedPreferencesService
+import com.mclowicz.compass.services.location.LocationService
+import com.mclowicz.compass.services.orientation.OrientationService
+import com.mclowicz.compass.services.permission.PermissionService
+import com.mclowicz.compass.services.sharedPreferences.SharedPreferencesServiceJava
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,7 +21,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideSharedPreferences(app: Application) = SharedPreferencesService(app)
+    fun provideSharedPreferencesJava(app: Application) = SharedPreferencesServiceJava(app)
 
     @Provides
     @Singleton
@@ -46,6 +46,6 @@ object AppModule {
     @Singleton
     fun provideOrientationService(
         sensorManager: SensorManager,
-        sharedPreferencesService: SharedPreferencesService
+        sharedPreferencesService: SharedPreferencesServiceJava
     ) = OrientationService(sensorManager, sharedPreferencesService)
 }

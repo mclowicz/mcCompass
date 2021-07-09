@@ -1,8 +1,8 @@
 package com.mclowicz.compass.data.repository
 
-import com.mclowicz.compass.data.location.LocationService
-import com.mclowicz.compass.data.orientation.OrientationService
-import com.mclowicz.compass.data.permission.PermissionService
+import com.mclowicz.compass.services.location.LocationService
+import com.mclowicz.compass.services.orientation.OrientationService
+import com.mclowicz.compass.services.permission.PermissionService
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
