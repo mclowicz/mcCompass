@@ -1,4 +1,4 @@
-package com.mclowicz.compass.services.orientation
+package com.mclowicz.compass.service.orientation
 
 import android.hardware.Sensor
 import android.hardware.Sensor.TYPE_ACCELEROMETER
@@ -8,12 +8,12 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import com.mclowicz.compass.data.model.CompassOrientation
 import com.mclowicz.compass.data.model.GeoLocation
-import com.mclowicz.compass.services.sharedPreferences.SharedPreferencesServiceJava
+import com.mclowicz.compass.service.sharedPreferences.SharedPreferencesServiceJava
 import com.mclowicz.compass.utils.Resource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.channelFlow
 import java.lang.Math.toDegrees
 import javax.inject.Inject
 import kotlin.math.atan2
@@ -35,7 +35,7 @@ class OrientationService @Inject constructor(
     private var lastMagnetometerSet = false
 
     @ExperimentalCoroutinesApi
-    fun fetchOrientation(): Flow<Resource<CompassOrientation>> = callbackFlow {
+    fun fetchOrientation(): Flow<Resource<CompassOrientation>> = channelFlow {
         val currentPosition: GeoLocation = sharedPreferencesService.getCurrentLocation()
         val destinationPosition: GeoLocation = sharedPreferencesService.getDestinationLocation()
         val accelerometer = sensorManager.getDefaultSensor(TYPE_ACCELEROMETER)
@@ -75,7 +75,7 @@ class OrientationService @Inject constructor(
                         compassOrientation.destinationDirection = destinationAzimuth.toFloat()
                         compassOrientation.lastDestinationDirection = lastDestinationAzimuth
                         lastDestinationAzimuth = destinationAzimuth.toFloat()
-                        offer(Resource.Success(compassOrientation))
+                        channel.offer(Resource.Success(compassOrientation))
                     }
                 }
             }
@@ -95,6 +95,7 @@ class OrientationService @Inject constructor(
         awaitClose {
             sensorManager.unregisterListener(listener, accelerometer)
             sensorManager.unregisterListener(listener, magnetometer)
+            channel.close()
         }
     }
 

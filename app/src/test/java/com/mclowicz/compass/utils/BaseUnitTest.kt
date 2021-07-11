@@ -16,4 +16,7 @@ abstract class BaseUnitTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     val repository: CompassRepository = mock()
+
+    abstract fun mockSuccessfulCase(): Any
+    abstract fun mockFailureCase(): Any
 }

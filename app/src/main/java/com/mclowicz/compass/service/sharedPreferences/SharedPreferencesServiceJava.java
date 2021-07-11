@@ -1,4 +1,4 @@
-package com.mclowicz.compass.services.sharedPreferences;
+package com.mclowicz.compass.service.sharedPreferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;

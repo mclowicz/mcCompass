@@ -60,12 +60,12 @@ class CompassViewModelShould : BaseUnitTest() {
 
     @Test
     fun `emit error when receive error`() {
-        val viewModel = mockErrorCase()
+        val viewModel = mockFailureCase()
         assertEquals(expectedLocationError, viewModel.currentLocation.getValueForTest())
         assertEquals(expectedCompassOrientationError, viewModel.currentOrientation.getValueForTest())
     }
 
-    private fun mockSuccessfulCase(): CompassViewModel {
+    override fun mockSuccessfulCase(): CompassViewModel {
         runBlockingTest {
             whenever(repository.getCurrentLocation()).thenReturn(
                 flow {
@@ -81,7 +81,7 @@ class CompassViewModelShould : BaseUnitTest() {
         return CompassViewModel(repository)
     }
 
-    private fun mockErrorCase(): CompassViewModel {
+    override fun mockFailureCase(): CompassViewModel {
         runBlockingTest {
             whenever(repository.getCurrentLocation()).thenReturn(
                 flow {

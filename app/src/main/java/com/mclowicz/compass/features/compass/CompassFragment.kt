@@ -16,7 +16,7 @@ import com.mclowicz.compass.R
 import com.mclowicz.compass.data.model.CompassOrientation
 import com.mclowicz.compass.data.model.GeoLocation
 import com.mclowicz.compass.databinding.FragmentCompassBinding
-import com.mclowicz.compass.services.sharedPreferences.SharedPreferencesServiceJava
+import com.mclowicz.compass.service.sharedPreferences.SharedPreferencesServiceJava
 import com.mclowicz.compass.utils.Resource
 import com.mclowicz.compass.utils.format
 import dagger.hilt.android.AndroidEntryPoint

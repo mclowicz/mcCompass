@@ -1,4 +1,4 @@
-package com.mclowicz.compass.services.location
+package com.mclowicz.compass.service.location
 
 import android.annotation.SuppressLint
 import android.location.Location
@@ -11,7 +11,7 @@ import com.mclowicz.compass.utils.Resource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.channelFlow
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -21,8 +21,8 @@ class LocationService @Inject constructor(
 
     @SuppressLint("MissingPermission")
     @ExperimentalCoroutinesApi
-    fun fetchUpdates(): Flow<Resource<Location>> = callbackFlow {
-        offer(Resource.Loading())
+    fun fetchUpdates(): Flow<Resource<Location>> = channelFlow {
+        channel.offer(Resource.Loading())
         val locationRequest = LocationRequest().apply {
             interval = TimeUnit.SECONDS.toMillis(UPDATE_INTERVAL_SECS)
             fastestInterval = TimeUnit.SECONDS.toMillis(FASTEST_UPDATE_INTERVAL_SECS)
@@ -32,11 +32,14 @@ class LocationService @Inject constructor(
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
                 val location = locationResult.lastLocation
-                offer(Resource.Success(location))
+                channel.offer(Resource.Success(location))
             }
         }
         client.requestLocationUpdates(locationRequest, callBack, Looper.getMainLooper())
-        awaitClose { client.removeLocationUpdates(callBack) }
+        awaitClose {
+            client.removeLocationUpdates(callBack)
+            channel.close()
+        }
     }
 
     companion object {

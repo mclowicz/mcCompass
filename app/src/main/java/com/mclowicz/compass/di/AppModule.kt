@@ -5,10 +5,10 @@ import android.content.Context
 import android.hardware.SensorManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.mclowicz.compass.services.location.LocationService
-import com.mclowicz.compass.services.orientation.OrientationService
-import com.mclowicz.compass.services.permission.PermissionService
-import com.mclowicz.compass.services.sharedPreferences.SharedPreferencesServiceJava
+import com.mclowicz.compass.service.location.LocationService
+import com.mclowicz.compass.service.orientation.OrientationService
+import com.mclowicz.compass.service.permission.PermissionService
+import com.mclowicz.compass.service.sharedPreferences.SharedPreferencesServiceJava
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
